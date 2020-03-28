@@ -2,10 +2,14 @@ package com.nicepay.nicepay.service;
 
 import android.app.Notification;
 import android.os.Bundle;
+import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.nicepay.nicepay.MainActivity;
+import com.nicepay.nicepay.conf.GlobalSettings;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -17,11 +21,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.nicepay.nicepay.MainActivity.mhandler;
+
 
 public class MyNotificationListenerService extends NotificationListenerService {
 
-	private static final String POST_URL = "https://www.baidu.com";
-//	private static final String POST_URL = "http://api.yikouhui.com/setNotice.shtml";
 
 	@Override
 	public void onNotificationPosted(StatusBarNotification sbn) {
@@ -59,9 +63,11 @@ public class MyNotificationListenerService extends NotificationListenerService {
 	 */
 	private void processOnReceive(String pkg, String title, String content) {
 
+		MainActivity.showLog.setText(title + content);
+
 		OkHttpClient client = new OkHttpClient();
 		final Request request = new Request.Builder()
-				.url(POST_URL)
+				.url(GlobalSettings.POST_URL)
 				.get()//默认就是GET请求，可以不写
 				.build();
 
@@ -69,12 +75,16 @@ public class MyNotificationListenerService extends NotificationListenerService {
 		call.enqueue(new Callback() {
 			@Override
 			public void onFailure(Call call, IOException e) {
-				Toast.makeText(getApplicationContext(), "发送失败" + e.getMessage(), Toast.LENGTH_LONG).show();
+//				Toast.makeText(getApplicationContext(), "发送失败" + e.getMessage(), Toast.LENGTH_LONG).show();
 			}
 
 			@Override
 			public void onResponse(Call call, Response response) throws IOException {
-				Toast.makeText(getApplicationContext(), "发送成功" + response.body(), Toast.LENGTH_LONG).show();
+//				Toast.makeText(getApplicationContext(), "发送成功" + response.body(), Toast.LENGTH_LONG).show();
+				Message msg = new Message();
+				msg.what = 01;
+				msg.obj = response.body().string();
+				MainActivity.mhandler.sendMessage(msg);
 			}
 		});
 
