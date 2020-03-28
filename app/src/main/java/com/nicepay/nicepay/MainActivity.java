@@ -3,13 +3,13 @@ package com.nicepay.nicepay;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.alibaba.fastjson.JSONObject;
+import com.nicepay.nicepay.conf.GlobalSettings;
 
 import java.io.IOException;
 
@@ -22,6 +22,9 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private TextView showLog;
+    private Button button;
+    private Button button2;
+    private EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +33,35 @@ public class MainActivity extends AppCompatActivity {
         Log.d("info", "===============================run ok...===============================");
 
         showLog = findViewById(R.id.showLog);
+        button = findViewById(R.id.button);
+        button2 = findViewById(R.id.button2);
+        editText = findViewById(R.id.editText);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = editText.getText().toString();
+                Log.d("d", "===================================="+text);
+                GlobalSettings.POST_URL = text;
+            }
+        });
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                testOkHttp();
+            }
+        });
+
+    }
+
+
+    private void testOkHttp() {
 
         OkHttpClient client = new OkHttpClient();
 
         final Request request = new Request.Builder()
-                .url("http://www.yikouhui.com/setShield.shtml?enable=false")
+                .url(GlobalSettings.POST_URL)
                 .get()//默认就是GET请求，可以不写
                 .build();
 
@@ -69,6 +96,6 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e) {
             showLog.setText("执行异常" + e.getMessage());
         }
-
     }
+
 }
