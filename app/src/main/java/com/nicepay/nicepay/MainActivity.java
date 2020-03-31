@@ -1,7 +1,6 @@
 package com.nicepay.nicepay;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -30,7 +29,6 @@ import com.nicepay.nicepay.utils.Constant;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -63,10 +61,6 @@ public class MainActivity extends AppCompatActivity {
         button2 = findViewById(R.id.button2);
         button3 = findViewById(R.id.button3);
         editText = findViewById(R.id.editText);
-
-
-        MyNotificationListenerService.a = this;
-
 
         String string = Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
         if (!string.contains(MyNotificationListenerService.class.getName())) {

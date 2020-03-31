@@ -1,15 +1,14 @@
 package com.nicepay.nicepay.service;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
-import android.os.PowerManager;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
@@ -18,33 +17,21 @@ import android.widget.Toast;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.nicepay.nicepay.MainActivity;
-import com.nicepay.nicepay.R;
 import com.nicepay.nicepay.client.PayBackcall;
 import com.nicepay.nicepay.client.PayManager;
 import com.nicepay.nicepay.client.entry.PayInfo;
-import com.nicepay.nicepay.utils.Constant;
-
-import java.lang.ref.WeakReference;
 
 
 public class MyNotificationListenerService extends NotificationListenerService {
 
 
     public static void actionStart(Context ctx) {
-//System.out.println("---- Notification service started!");
         Intent i = new Intent(ctx, MyNotificationListenerService.class);
         i.setAction("ACTION_START");
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ctx.startService(i);
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-//        actionStart(getBaseContext());
-//        acquireWakeLock();
-//        toggleNotificationListenerService();
-    }
 
 
     //重新开启MyNotificationListenerService
@@ -62,11 +49,27 @@ public class MyNotificationListenerService extends NotificationListenerService {
     }
 
 
-    public static MainActivity a;
-
-
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
+
+
+        // 测试代码 start
+
+
+//        Message msg = new Message();
+//        msg.what = Constant.MsgWhat.n_2;
+//        msg.obj = "收到通知:" + "content";
+//        a.button2.setText(msg.obj + "");
+
+
+//        MainActivity.mhandler.sendMessage(msg);
+//        MainActivity.showLog.setText(msg.obj.toString());
+//        Toast.makeText(a.getApplicationContext(), ">>>" + msg.obj.toString(), Toast.LENGTH_LONG);
+
+        // TODO 这里的测试代码好像走不通。
+
+        // 测试代码 end
+
 
         Notification notifcation = sbn.getNotification();
 
@@ -86,34 +89,10 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
             Log.i("info", String.format("收到通知，包名：%s，标题：%s，内容：%s", pkg, title, content));
 
-            // 测试代码 start
-            Message msg = new Message();
-            msg.what = Constant.MsgWhat.n_2;
-            msg.obj = "收到通知:" + content;
-            a.button2.setText(msg.obj + "");
-            MainActivity.mhandler.sendMessage(msg);
-            MainActivity.showLog.setText(msg.obj.toString());
-            Toast.makeText(a.getApplicationContext(), ">>>" + msg.obj.toString(), Toast.LENGTH_LONG);
-
-            // TODO 这里的测试代码好像走不通。
-            
-            // 测试代码 end
-
-            PayInfo payInfo = new PayInfo();
-            payInfo.setTitle(title);
-            payInfo.setContent(content);
-            payInfo.setPackageName(pkg);
-
-            PayManager.get().processOnReceive(new PayBackcall(payInfo) {
-
-                @Override
-                protected void success(Message msg) {
-                    MainActivity.mhandler.sendMessage(msg);
-                }
-
-                @Override
-                protected void failure(Message msg) {
-                    MainActivity.mhandler.sendMessage(msg);
+            Handler handlerThree=new Handler(Looper.getMainLooper());
+            handlerThree.post(new Runnable(){
+                public void run(){
+                    Toast.makeText(getApplicationContext() ,"show:" + title + "\n" + content + "\n" + pkg ,Toast.LENGTH_LONG).show();
                 }
             });
 
