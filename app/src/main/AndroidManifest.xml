@@ -12,26 +12,45 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </activity>
 
-<!--        <service
+        <service
             android:name=".service.MyNotificationListenerService"
             android:label="notificationListener"
             android:enabled="true"
-            android:process="system"
+            android:process=":pedometer"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
-        </service>-->
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </service>
 
+
+        <!-- 保活 -->
         <service
+            android:name=".service.MyListenerService"
+            android:process=":pedometer">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </service>
+
+      <!--  <service
             android:name=".service.QiangHongBaoService"
             android:enabled="true"
             android:exported="true"
@@ -44,12 +63,19 @@
             <meta-data
                 android:name="android.accessibilityservice"
                 android:resource="@xml/qianghongbao_service_config" />
-        </service>
+        </service>-->
 
     </application>
 
+    <!--广播-->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <!--解锁权限-->
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"></uses-permission>
+    <!--亮屏权限-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
     <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>-->
     <!--<uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DEVICE_POWER" tools:ignore="ProtectedPermissions" />-->

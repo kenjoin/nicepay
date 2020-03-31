@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
         }
 
-        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        startActivity(intent);
+//        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+//        startActivity(intent);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleNotificationListenerService();
+//                toggleNotificationListenerService();
             }
         });
 
