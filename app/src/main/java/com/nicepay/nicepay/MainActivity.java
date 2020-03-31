@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,7 +39,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static TextView showLog;
+    public TextView showLog;
     private Button button;
     public Button button2;
     private Button button3;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo .SCREEN_ORIENTATION_UNSPECIFIED);//竖屏
         Log.d("info", "===============================run ok...===============================");
         mhandler = new mHandler(this);
 
@@ -63,9 +66,12 @@ public class MainActivity extends AppCompatActivity {
         editText = findViewById(R.id.editText);
 
         String string = Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
-        if (!string.contains(MyNotificationListenerService.class.getName())) {
+        if (string == null || !string.contains(MyNotificationListenerService.class.getName())) {
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
         }
+
+        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        startActivity(intent);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

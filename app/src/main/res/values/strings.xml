@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Nicepay</string>
+    <string name="accessibility_description">accessibility_description</string>
 </resources>
