@@ -1,6 +1,7 @@
 package com.nicepay.nicepay.service;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
@@ -17,10 +18,13 @@ import android.widget.Toast;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.nicepay.nicepay.MainActivity;
+import com.nicepay.nicepay.R;
 import com.nicepay.nicepay.client.PayBackcall;
 import com.nicepay.nicepay.client.PayManager;
 import com.nicepay.nicepay.client.entry.PayInfo;
 import com.nicepay.nicepay.utils.Constant;
+
+import java.lang.ref.WeakReference;
 
 
 public class MyNotificationListenerService extends NotificationListenerService {
@@ -58,6 +62,8 @@ public class MyNotificationListenerService extends NotificationListenerService {
     }
 
 
+    public static MainActivity a;
+
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
@@ -84,13 +90,19 @@ public class MyNotificationListenerService extends NotificationListenerService {
             Message msg = new Message();
             msg.what = Constant.MsgWhat.n_2;
             msg.obj = "收到通知:" + content;
+            a.button2.setText(msg.obj + "");
             MainActivity.mhandler.sendMessage(msg);
+            MainActivity.showLog.setText(msg.obj.toString());
+            Toast.makeText(a.getApplicationContext(), ">>>" + msg.obj.toString(), Toast.LENGTH_LONG);
+
+            // TODO 这里的测试代码好像走不通。
+            
+            // 测试代码 end
 
             PayInfo payInfo = new PayInfo();
             payInfo.setTitle(title);
             payInfo.setContent(content);
             payInfo.setPackageName(pkg);
-            // 测试代码 end
 
             PayManager.get().processOnReceive(new PayBackcall(payInfo) {
 

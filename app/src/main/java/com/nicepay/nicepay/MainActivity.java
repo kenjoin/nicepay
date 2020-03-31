@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static TextView showLog;
     private Button button;
-    private Button button2;
+    public Button button2;
     private Button button3;
     private EditText editText;
 
@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         button3 = findViewById(R.id.button3);
         editText = findViewById(R.id.editText);
 
+
+        MyNotificationListenerService.a = this;
 
 
         String string = Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
