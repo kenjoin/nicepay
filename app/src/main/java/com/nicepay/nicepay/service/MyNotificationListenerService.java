@@ -89,10 +89,42 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
             Log.i("info", String.format("收到通知，包名：%s，标题：%s，内容：%s", pkg, title, content));
 
-            Handler handlerThree=new Handler(Looper.getMainLooper());
+            Handler handlerThree = new Handler(Looper.getMainLooper());
             handlerThree.post(new Runnable(){
                 public void run(){
                     Toast.makeText(getApplicationContext() ,"show:" + title + "\n" + content + "\n" + pkg ,Toast.LENGTH_LONG).show();
+                }
+            });
+
+            PayInfo payInfo = new PayInfo();
+            payInfo.setTitle(title);
+            payInfo.setContent(content);
+            payInfo.setPackageName(pkg);
+
+            payInfo.setTitle("微信支付");
+            payInfo.setContent("微信支付，内容：微信支付收款0.09元(朋友到店)====>" + content);
+            payInfo.setPackageName("com.tencent.mm");
+
+            PayManager.get().processOnReceive(new PayBackcall(payInfo) {
+
+                @Override
+                protected void success(Message msg) {
+                    handlerThree.post(new Runnable(){
+                        public void run(){
+                            Toast.makeText(getApplicationContext() ,"推送成功" ,Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    MainActivity.mhandler.sendMessage(msg);
+                }
+
+                @Override
+                protected void failure(Message msg) {
+                    handlerThree.post(new Runnable(){
+                        public void run(){
+                            Toast.makeText(getApplicationContext() ,"推送失败" ,Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    MainActivity.mhandler.sendMessage(msg);
                 }
             });
 
