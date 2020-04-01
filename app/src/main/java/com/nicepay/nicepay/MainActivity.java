@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,12 +18,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.nicepay.nicepay.client.PayBackcall;
-import com.nicepay.nicepay.client.PayManager;
-import com.nicepay.nicepay.client.entry.PayInfo;
 import com.nicepay.nicepay.conf.GlobalSettings;
 import com.nicepay.nicepay.service.MyNotificationListenerService;
 import com.nicepay.nicepay.utils.Constant;
@@ -39,9 +37,9 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    public TextView showLog;
+    private TextView showLog;
     private Button button;
-    public Button button2;
+    private Button button2;
     private Button button3;
     private EditText editText;
 
@@ -83,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         button2.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
 //                testOkHttp();
@@ -151,25 +150,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    int progress = 20;
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void test() {
 
-        PayInfo payInfo = new PayInfo();
-        payInfo.setTitle("微信支付");
-        payInfo.setContent("微信支付，内容：微信支付收款0.01元(朋友到店)");
-        payInfo.setPackageName("com.tencent.mm");
+//        PayInfo payInfo = new PayInfo();
+//        payInfo.setTitle("微信支付");
+//        payInfo.setContent("微信支付，内容：微信支付收款0.01元(朋友到店)");
+//        payInfo.setPackageName("com.tencent.mm");
 
-        PayManager.get().processOnReceive(new PayBackcall(payInfo){
-
-            @Override
-            protected void success(Message msg) {
-                MainActivity.mhandler.sendMessage(msg);
-            }
-
-            @Override
-            protected void failure(Message msg) {
-                MainActivity.mhandler.sendMessage(msg);
-            }
-        });
     }
 
     private void testOkHttp() {

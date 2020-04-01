@@ -3,30 +3,22 @@ package com.nicepay.nicepay.service;
 import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.app.Notification;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.os.PowerManager;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.alibaba.fastjson.JSONObject;
-import com.nicepay.nicepay.MainActivity;
 import com.nicepay.nicepay.client.LocalReceiver;
-import com.nicepay.nicepay.client.PayBackcall;
-import com.nicepay.nicepay.client.PayManager;
-import com.nicepay.nicepay.client.ServiceMsgHanlder;
 import com.nicepay.nicepay.client.entry.PayInfo;
 
 
@@ -62,31 +54,19 @@ public class MyNotificationListenerService extends NotificationListenerService {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //取消绑定
+        localBroadcastManager.unregisterReceiver(localReceiver);
+    }
+
+    @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
 
         // 如果熄屏状态，则亮屏再解锁
 //        if (!isScreenOn()) {
 //            wakeUpScreen();
 //        }
-
-
-        // 测试代码 start
-
-
-//        Message msg = new Message();
-//        msg.what = Constant.MsgWhat.n_2;
-//        msg.obj = "收到通知:" + "content";
-//        a.button2.setText(msg.obj + "");
-
-
-//        MainActivity.mhandler.sendMessage(msg);
-//        MainActivity.showLog.setText(msg.obj.toString());
-//        Toast.makeText(a.getApplicationContext(), ">>>" + msg.obj.toString(), Toast.LENGTH_LONG);
-
-        // TODO 这里的测试代码好像走不通。
-
-        // 测试代码 end
-
 
         Notification notifcation = sbn.getNotification();
 
@@ -113,7 +93,6 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 }
             });
 
-
             PayInfo payInfo = new PayInfo();
             payInfo.setTitle(title);
             payInfo.setContent(content);
@@ -123,42 +102,6 @@ public class MyNotificationListenerService extends NotificationListenerService {
             intent.putExtra("msg", JSONObject.toJSONString(payInfo));
             //发送本地广播
             localBroadcastManager.sendBroadcast(intent);
-
-//            new ServiceMsgHanlder(title, content, pkg).start();
-
-/*
-            PayInfo payInfo = new PayInfo();
-            payInfo.setTitle(title);
-            payInfo.setContent(content);
-            payInfo.setPackageName(pkg);
-
-            payInfo.setTitle("微信支付");
-            payInfo.setContent("微信支付，内容：微信支付收款0.09元(朋友到店)====>" + content);
-            payInfo.setPackageName("com.tencent.mm");
-
-            PayManager.get().processOnReceive(new PayBackcall(payInfo) {
-
-                @Override
-                protected void success(Message msg) {
-                    handlerThree.post(new Runnable(){
-                        public void run(){
-                            Toast.makeText(getApplicationContext() ,"推送成功" ,Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    MainActivity.mhandler.sendMessage(msg);
-                }
-
-                @Override
-                protected void failure(Message msg) {
-                    handlerThree.post(new Runnable(){
-                        public void run(){
-                            Toast.makeText(getApplicationContext() ,"推送失败" ,Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    MainActivity.mhandler.sendMessage(msg);
-                }
-            });*/
-
         }
 
     }

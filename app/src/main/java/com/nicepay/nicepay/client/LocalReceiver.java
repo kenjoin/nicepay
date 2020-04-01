@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.nicepay.nicepay.MainActivity;
 import com.nicepay.nicepay.client.entry.PayInfo;
 import com.nicepay.nicepay.conf.GlobalSettings;
 import com.nicepay.nicepay.utils.Constant;
@@ -27,8 +28,12 @@ import okhttp3.Response;
 
 public class LocalReceiver extends BroadcastReceiver {
 
+    private final static OkHttpClient client = new OkHttpClient();
+
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        // 后期使用MQTT
 
         String msg = intent.getExtras().getString("msg");
 
@@ -43,24 +48,6 @@ public class LocalReceiver extends BroadcastReceiver {
             return;
         }
 
-        Toast.makeText(context,"解析完成", Toast.LENGTH_SHORT).show();
-
-//        PayManager.get().processOnReceive(new PayBackcall(payInfo) {
-//
-//            @Override
-//            protected void success(Message msg) {
-//                MainActivity.mhandler.sendMessage(msg);
-//            }
-//
-//            @Override
-//            protected void failure(Message msg) {
-//                MainActivity.mhandler.sendMessage(msg);
-//            }
-//        });
-
-
-
-
         String title = payInfo.getTitle(), content = payInfo.getContent(), pkg = payInfo.getPackageName();
 
         Map<String, Object> payload = new HashMap<String, Object>();
@@ -69,7 +56,6 @@ public class LocalReceiver extends BroadcastReceiver {
         final int[] retryNum = {3};
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), JSONObject.toJSONString(payload));
 
-        OkHttpClient client = new OkHttpClient();
         final Request request = new Request.Builder()
                 .url(GlobalSettings.POST_URL)
                 .post(requestBody)
@@ -103,8 +89,11 @@ public class LocalReceiver extends BroadcastReceiver {
                 msg.what = Constant.MsgWhat.n_2;
 //                msg.obj = response.body().string();
                 msg.obj = "推送成功：" + title + "=>" + finalPayInfo.getMoney();
+
+//                MainActivity.mhandler.sendMessage(msg);
+//                Log.d("info", "===============================推送成功===============================");
             }
         });
-
     }
+
 }
